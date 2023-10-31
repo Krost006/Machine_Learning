@@ -1,40 +1,41 @@
-import torch
-import torchvision
-import torchvision.transforms as transforms
-import matplotlib.pyplot as plt
-import numpy as np
+from imports import *
+class Data(L.LightningDataModule):
 
-batch_size = 4
+  def __init__(self, data_dir = 'new_data'):
+    super().__init__()
+    self.data_dir = data_dir
+    #self.hidden_size = hidden_size
+    self.learning_rate = 0.02
+    self.transform = transforms.Compose(
+            [
+               transforms.ToTensor(),
+     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+            ]
+        )
+    ####################
+    # DATA RELATED HOOKS
+    ####################
 
-def imshow(img):
-    img = img / 2 + 0.5     
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()
+  def prepare_data(self):
+        # download
+    CIFAR10(self.data_dir, train=True, download=True)
+    CIFAR10(self.data_dir, train=False, download=True)
 
-def view(n = 0):
-    dataiter = iter(trainloader)
-    for i in range(n):
-        images, labels = next(dataiter)
+  def setup(self, stage=None):
+     # Assign train/val datasets for use in dataloaders
+     if stage == "fit" or stage is None:
+        mnist_full = CIFAR10(self.data_dir, train=True, transform=self.transform)
+        self.mnist_train, self.mnist_val = random_split(mnist_full, [0.7, 0.3])
 
-    imshow(torchvision.utils.make_grid(images))
-    print(' '.join(f'{classes[labels[j]]:5s}' for j in range(batch_size)))
+        # Assign test dataset for use in dataloader(s)
+     if stage == "test" or stage is None:
+        self.mnist_test = CIFAR10(self.data_dir, train=False, transform=self.transform)
 
-transform = transforms.Compose(
-    [transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+  def train_dataloader(self):
+      return torch.utils.data.DataLoader(self.mnist_train, batch_size=4)
 
+  def val_dataloader(self):
+      return torch.utils.data.DataLoader(self.mnist_val, batch_size=4)
 
-
-trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
-                                        download=True, transform=transform)
-trainloader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
-                                          shuffle=True, num_workers=2)
-
-testset = torchvision.datasets.CIFAR10(root='./data', train=False,
-                                       download=True, transform=transform)
-testloader = torch.utils.data.DataLoader(testset, batch_size=batch_size,
-                                         shuffle=False, num_workers=2)
-
-classes = ('plane', 'car', 'bird', 'cat',
-           'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+  def test_dataloader(self):
+      return torch.utils.data.DataLoader(self.mnist_test, batch_size=4)
