@@ -1,4 +1,4 @@
 import os
-import training.py
+from training.py import train
 os.system("pip install lightning")
 NAME = "II"
