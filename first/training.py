@@ -6,7 +6,7 @@ d = Data()
 m = Model()
 
 def train():
-
+    os.system("pip install lightning")
     trainer = L.Trainer(
         max_epochs=3,
         accelerator="auto",
