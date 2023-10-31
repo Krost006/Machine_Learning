@@ -1,9 +1,11 @@
 from imports import *
 from model import *
 from dataset_prepare import *
-def train:
-    d = Data()
-    m = Model()
+
+d = Data()
+m = Model()
+
+def train():
 
     trainer = L.Trainer(
         max_epochs=3,
