@@ -1,4 +1,6 @@
 from imports import *
+from model import *
+from dataset_prepare import *
 d = Data()
 m = Model()
 
