@@ -4,6 +4,8 @@ class Model(L.LightningModule):
     super().__init__()
     self.learning_rate = 0.02
 
+    self.save_hyperparameters()
+  
     self.conv1 = nn.Conv2d(3, 6, 5)
     self.pool = nn.MaxPool2d(2, 2)
     self.conv2 = nn.Conv2d(6, 16, 5)
@@ -40,6 +42,8 @@ class Model(L.LightningModule):
         """
         x, y = batch
         loss = F.cross_entropy(self(x), y)
+        self.log('train_loss', loss, on_step=True, on_epoch=True, logger=True)
+        self.log('train_acc', self.val_accuracy, on_step=True, on_epoch=True, logger=True)
         return loss
   def validation_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: int) -> None:
         """Defines a single validation step for the MLP.

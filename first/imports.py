@@ -19,6 +19,7 @@ from typing import Tuple
 import torch.nn as nn
 import torch.nn.functional as F
 from torchmetrics import Accuracy
+from pytorch_lightning.loggers import WandbLogger
 
 import os
 
