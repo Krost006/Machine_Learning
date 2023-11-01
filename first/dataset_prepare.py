@@ -1,4 +1,4 @@
-from imports import *
+from first.imports import *
 class Data(L.LightningDataModule):
 
   def __init__(self, data_dir = 'new_data'):

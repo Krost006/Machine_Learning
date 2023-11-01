@@ -1,4 +1,4 @@
-from imports import *
+from first.imports import *
 class Model(L.LightningModule):
   def __init__(self):
     super().__init__()
